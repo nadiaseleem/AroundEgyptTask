@@ -1,0 +1,53 @@
+package com.example.aroundegypt.features.home.presentation
+
+import androidx.compose.material3.SnackbarHostState
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.example.aroundegypt.common.data.models.state.Resource
+import com.example.aroundegypt.common.presentation.viewmodel.sendEvent
+import com.example.aroundegypt.features.home.domain.usecases.GetRecommendedExperiencesUC
+import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.onStart
+import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
+import javax.inject.Inject
+
+@HiltViewModel
+class HomeViewModel @Inject constructor(private val getRecommendedExperiencesUC: GetRecommendedExperiencesUC) :
+    ViewModel() {
+    val snackbarHostState = SnackbarHostState()
+    private var hasLoadedRecommendedExperiences = false
+
+    private val _state = MutableStateFlow(HomeViewStates())
+    val state = _state.onStart {
+        if (!hasLoadedRecommendedExperiences)
+            getRecommendedExperiences()
+    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000L), HomeViewStates())
+
+    fun setSearchQuery(searchQuery: String) {
+        _state.update { it.copy(searchQuery = searchQuery) }
+    }
+
+    fun searchExperiences() {}
+
+    fun getRecommendedExperiences() {
+        viewModelScope.launch {
+            getRecommendedExperiencesUC.invoke().collect { resource ->
+                when (resource) {
+                    is Resource.Failure -> resource.exception.message?.let {
+                        sendEvent(HomeEvent.ShowError(it))
+                    }
+
+                    is Resource.Loading -> _state.update { it.copy(isLoading = resource.loading) }
+                    is Resource.Success -> _state.update { it.copy(recommendedExperiences = resource.data) }
+
+                }
+            }
+        }
+    }
+
+    fun likeExperience(id: String) {}
+}

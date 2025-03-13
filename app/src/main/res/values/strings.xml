@@ -1,3 +1,25 @@
 <resources>
     <string name="app_name">Around Egypt</string>
+    <string name="menu">menu</string>
+    <string name="filter">filter</string>
+    <string name="search">Search</string>
+    <string name="close">close</string>
+    <string name="app_icon">App icon</string>
+    <string name="expand_list">Expand list</string>
+    <string name="language">Language</string>
+    <string name="search_placeholder">Try “Luxor”</string>
+    <string name="welcome">Welcome!</string>
+    <string name="welcome_message">Now you can explore any experience in 360 degrees and get all the details about it all in one place.</string>
+    <string name="recommended_experiences">Recommended Experiences</string>
+    <string name="experience_image">Experience Image</string>
+    <string name="seen_count">Seen Count</string>
+    <string name="number_of_views">Number of views</string>
+    <string name="recommended">Recommended</string>
+    <string name="recommended_capital">RECOMMENDED</string>
+    <string name="info">Info</string>
+    <string name="image">Image Icon\n</string>
+    <string name="view_in_360">View Experience in 360 degree</string>
+    <string name="like">Like</string>
+    <string name="retry">Retry</string>
+
 </resources>
