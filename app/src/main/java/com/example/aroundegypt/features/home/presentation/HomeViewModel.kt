@@ -7,6 +7,7 @@ import com.example.aroundegypt.common.data.models.state.Resource
 import com.example.aroundegypt.common.presentation.viewmodel.sendEvent
 import com.example.aroundegypt.features.home.domain.usecases.GetMostRecentExperiencesUC
 import com.example.aroundegypt.features.home.domain.usecases.GetRecommendedExperiencesUC
+import com.example.aroundegypt.features.home.domain.usecases.SearchExperiencesUC
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -19,7 +20,8 @@ import javax.inject.Inject
 @HiltViewModel
 class HomeViewModel @Inject constructor(
     private val getRecommendedExperiencesUC: GetRecommendedExperiencesUC,
-    private val getMostRecentExperiencesUC: GetMostRecentExperiencesUC
+    private val getMostRecentExperiencesUC: GetMostRecentExperiencesUC,
+    private val searchExperiencesUC: SearchExperiencesUC
 ) :
     ViewModel() {
     val snackbarHostState = SnackbarHostState()
@@ -36,10 +38,32 @@ class HomeViewModel @Inject constructor(
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000L), HomeViewStates())
 
     fun setSearchQuery(searchQuery: String) {
-        _state.update { it.copy(searchQuery = searchQuery) }
+        _state.update { it.copy(searchQuery = searchQuery, isSearchPerformed = false) }
+        clearSearchResults()
+
     }
 
-    fun searchExperiences() {}
+    fun searchExperiences() {
+        viewModelScope.launch {
+            clearSearchResults()
+            _state.update { it.copy(isSearchPerformed = true) }
+            searchExperiencesUC.invoke(_state.value.searchQuery).collect { resource ->
+
+                when (resource) {
+                    is Resource.Failure -> resource.exception.message?.let {
+                        sendEvent(HomeEvent.ShowError(it))
+                    }
+
+                    is Resource.Loading -> _state.update { it.copy(isLoading = resource.loading) }
+                    is Resource.Success -> _state.update { it.copy(experiencesSearchResult = resource.data) }
+                }
+            }
+        }
+    }
+
+    fun clearSearchResults() {
+        _state.update { it.copy(experiencesSearchResult = emptyList()) }
+    }
 
     fun getRecommendedExperiences() {
         viewModelScope.launch {
@@ -48,7 +72,6 @@ class HomeViewModel @Inject constructor(
                     is Resource.Failure -> resource.exception.message?.let {
                         sendEvent(HomeEvent.ShowError(it))
                     }
-
                     is Resource.Loading -> _state.update { it.copy(isLoading = resource.loading) }
                     is Resource.Success -> _state.update { it.copy(recommendedExperiences = resource.data) }
 
@@ -64,7 +87,6 @@ class HomeViewModel @Inject constructor(
                     is Resource.Failure -> resource.exception.message?.let {
                         sendEvent(HomeEvent.ShowError(it))
                     }
-
                     is Resource.Loading -> _state.update { it.copy(isLoading = resource.loading) }
                     is Resource.Success -> _state.update { it.copy(mostRecentExperiences = resource.data) }
 

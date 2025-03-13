@@ -6,6 +6,8 @@ data class HomeViewStates(
     val isLoading: Boolean = false,
     val recommendedExperiences: List<ExperiencesResponse.Experience> = emptyList(),
     val mostRecentExperiences: List<ExperiencesResponse.Experience> = emptyList(),
+    val experiencesSearchResult: List<ExperiencesResponse.Experience> = emptyList(),
     val errorMessage: String? = null,
-    val searchQuery: String = ""
+    val searchQuery: String = "",
+    val isSearchPerformed: Boolean = false
 )
