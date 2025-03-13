@@ -6,4 +6,5 @@ interface IExperiencesLocalDS {
     suspend fun getRecommendedExperiences(): List<ExperienceEntity>
     suspend fun saveExperiences(experiences: List<ExperienceEntity>)
     suspend fun getMostRecentExperiences(): List<ExperienceEntity>
+    suspend fun searchExperiences(query: String): List<ExperienceEntity>
 }

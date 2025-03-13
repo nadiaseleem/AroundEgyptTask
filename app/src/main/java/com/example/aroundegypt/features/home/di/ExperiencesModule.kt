@@ -11,6 +11,7 @@ import com.example.aroundegypt.features.home.domain.repository.local.IExperience
 import com.example.aroundegypt.features.home.domain.repository.remote.IExperiencesRemoteDS
 import com.example.aroundegypt.features.home.domain.usecases.GetMostRecentExperiencesUC
 import com.example.aroundegypt.features.home.domain.usecases.GetRecommendedExperiencesUC
+import com.example.aroundegypt.features.home.domain.usecases.SearchExperiencesUC
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -55,5 +56,10 @@ internal object ExperiencesModule {
     @Provides
     fun provideGetMostRecentExperiencesUC(experiencesRepository: IExperiencesRepository): GetMostRecentExperiencesUC {
         return GetMostRecentExperiencesUC(repository = experiencesRepository)
+    }
+
+    @Provides
+    fun provideSearchExperiencesUC(experiencesRepository: IExperiencesRepository): SearchExperiencesUC {
+        return SearchExperiencesUC(repository = experiencesRepository)
     }
 }

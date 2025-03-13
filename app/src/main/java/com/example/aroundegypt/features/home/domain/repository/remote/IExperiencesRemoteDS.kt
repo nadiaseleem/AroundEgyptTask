@@ -5,4 +5,5 @@ import com.example.aroundegypt.features.home.data.models.dto.ExperiencesResponse
 interface IExperiencesRemoteDS {
     suspend fun getRecommendedExperiences(): List<ExperiencesResponseDto.ExperienceDto>
     suspend fun getMostRecentExperiences(): List<ExperiencesResponseDto.ExperienceDto>
+    suspend fun searchExperiences(query: String): List<ExperiencesResponseDto.ExperienceDto>
 }

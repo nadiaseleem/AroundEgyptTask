@@ -37,4 +37,18 @@ class ExperiencesRepository(
             return localDS.getMostRecentExperiences().map { ExperienceMapper.entityToDomain(it) }
         }
     }
+
+    override suspend fun searchExperiences(query: String): List<ExperiencesResponse.Experience> {
+        if (connectivityChecker.isInternetAvailable()) {
+            val experiencesDto = remoteDS.searchExperiences(query)
+            val experiences = experiencesDto.map { ExperienceMapper.dtoToDomain(it) }
+            val experiencesEntity = experiences.map { ExperienceMapper.domainToEntity(it) }
+            localDS.saveExperiences(
+                experiencesEntity
+            )
+            return experiences
+        } else {
+            return localDS.searchExperiences(query).map { ExperienceMapper.entityToDomain(it) }
+        }
+    }
 }

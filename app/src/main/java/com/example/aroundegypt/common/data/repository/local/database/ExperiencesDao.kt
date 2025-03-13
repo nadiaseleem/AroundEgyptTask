@@ -16,4 +16,8 @@ interface ExperiencesDao {
 
     @Query("select * from ExperienceEntity")
     suspend fun getMostRecentExperiences(): List<ExperienceEntity>
+
+    @Query("select * from ExperienceEntity where title like '%' || :query || '%'")
+    suspend fun searchExperiences(query: String): List<ExperienceEntity>
+
 }
