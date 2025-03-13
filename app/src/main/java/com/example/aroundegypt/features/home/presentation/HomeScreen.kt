@@ -1,7 +1,6 @@
 package com.example.aroundegypt.features.home.presentation
 
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
@@ -9,6 +8,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawing
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
@@ -38,7 +38,6 @@ import com.example.aroundegypt.common.presentation.events.EventBus
 import com.example.aroundegypt.common.presentation.ui.theme.Gotham
 import com.example.aroundegypt.common.presentation.ui.theme.GothamRounded
 import com.example.aroundegypt.common.presentation.ui_components.HomeTopAppBar
-import com.example.aroundegypt.features.home.domain.models.ExperiencesResponse
 import com.example.aroundegypt.features.home.presentation.ui_components.ExperienceCard
 import com.example.aroundegypt.features.home.presentation.ui_components.ShimmerListItem
 import kotlinx.serialization.Serializable
@@ -98,8 +97,8 @@ fun HomeScreenContent(
 
         if (state.searchQuery.isEmpty()) {
             DefaultHomeState(
+                state = state,
                 contentPadding = contentPadding,
-                recommendedExperiences = state.recommendedExperiences,
                 isLoading = state.isLoading
             ) {
                 onLikeClick(it)
@@ -113,56 +112,100 @@ fun HomeScreenContent(
 @Composable
 private fun DefaultHomeState(
     contentPadding: PaddingValues,
-    recommendedExperiences: List<ExperiencesResponse.Experience>,
+    state: HomeViewStates,
     isLoading: Boolean,
     onLikeClick: (String) -> Unit,
 ) {
-
-    Column(
+    LazyColumn(
         modifier = Modifier
             .padding(contentPadding)
-            .padding(16.dp)
-            .fillMaxWidth()
+            .padding(start = 18.dp)
+            .fillMaxWidth(),
+        verticalArrangement = Arrangement.spacedBy(10.dp)
     ) {
-        Text(
-            text = stringResource(R.string.welcome),
-            fontFamily = GothamRounded,
-            fontWeight = FontWeight.Bold,
-            fontSize = 22.sp
-        )
-        Text(
-            text = stringResource(R.string.welcome_message),
-            fontFamily = Gotham,
-            fontWeight = FontWeight.Medium,
-            fontSize = 14.sp,
-            style = TextStyle(
-                lineHeight = 16.sp,
-                baselineShift = BaselineShift(1.5F),
-                lineHeightStyle = LineHeightStyle(
-                    alignment = LineHeightStyle.Alignment.Proportional,
-                    trim = Trim.Both
+        // Welcome Text
+        item {
+            Text(
+                text = stringResource(R.string.welcome),
+                fontFamily = GothamRounded,
+                fontWeight = FontWeight.Bold,
+                fontSize = 22.sp
+            )
+        }
+
+        // Welcome Message Text
+        item {
+            Text(
+                text = stringResource(R.string.welcome_message),
+                fontFamily = Gotham,
+                fontWeight = FontWeight.Medium,
+                fontSize = 14.sp,
+                style = TextStyle(
+                    lineHeight = 16.sp,
+                    baselineShift = BaselineShift(1F),
+                    lineHeightStyle = LineHeightStyle(
+                        alignment = LineHeightStyle.Alignment.Proportional,
+                        trim = Trim.Both
+                    )
                 )
-            ),
-            modifier = Modifier.padding(top = 10.dp)
-        )
-        Spacer(modifier = Modifier.height(10.dp))
-        Text(
-            text = stringResource(R.string.recommended_experiences),
-            fontFamily = Gotham,
-            fontWeight = FontWeight.Bold,
-            fontSize = 22.sp
-        )
-        Spacer(modifier = Modifier.height(10.dp))
-        LazyRow(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
-            items(recommendedExperiences) { experience ->
-                ShimmerListItem(isLoading = isLoading, contentAfterLoading = {
-                    ExperienceCard(experience = experience) { onLikeClick(it) }
-                })
+            )
+        }
+
+        // Recommended Experiences Text
+        item {
+            Text(
+                text = stringResource(R.string.recommended_experiences),
+                fontFamily = Gotham,
+                fontWeight = FontWeight.Bold,
+                fontSize = 22.sp
+            )
+        }
+
+        // LazyRow for Recommended Experiences
+        item {
+            LazyRow(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(10.dp),
+            ) {
+                items(state.recommendedExperiences) { experience ->
+                    ShimmerListItem(isLoading = isLoading, contentAfterLoading = {
+                        ExperienceCard(
+                            modifier = Modifier.width(320.dp),
+                            experience = experience,
+                            isRecommended = true,
+                            onLikeClick = { onLikeClick(it) }
+                        )
+                    })
+                }
             }
+        }
+
+        // Spacer
+        item {
+            Spacer(modifier = Modifier.height(10.dp))
+        }
+
+        // Most Recent Text
+        item {
+            Text(
+                text = stringResource(R.string.most_recent),
+                fontFamily = Gotham,
+                fontWeight = FontWeight.Bold,
+                fontSize = 22.sp
+            )
+        }
+
+        // LazyColumn for Most Recent Experiences
+        items(state.mostRecentExperiences) { experience ->
+            ShimmerListItem(isLoading = isLoading, contentAfterLoading = {
+                ExperienceCard(
+                    experience = experience,
+                    modifier = Modifier.padding(end = 18.dp)
+                ) { onLikeClick(it) }
+            })
         }
     }
 }
-
 
 @Composable
 private fun SearchState(contentPadding: PaddingValues, isLoading: Boolean) {

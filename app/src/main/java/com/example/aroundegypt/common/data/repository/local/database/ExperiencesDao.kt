@@ -9,8 +9,11 @@ import com.example.aroundegypt.features.home.data.models.entity.ExperienceEntity
 @Dao
 interface ExperiencesDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun saveRecommendedExperiences(experiences: List<ExperienceEntity>)
+    suspend fun saveExperiences(experiences: List<ExperienceEntity>)
 
     @Query("select * from ExperienceEntity where recommended=1")
     suspend fun getRecommendedExperiences(): List<ExperienceEntity>
+
+    @Query("select * from ExperienceEntity")
+    suspend fun getMostRecentExperiences(): List<ExperienceEntity>
 }
