@@ -26,8 +26,8 @@ fun ShimmerListItem(
         ) {
             Box(
                 modifier = Modifier
-                    .width(300.dp)
-                    .height(160.dp)
+                    .width(320.dp)
+                    .height(164.dp)
                     .shimmerEffect()
             )
 

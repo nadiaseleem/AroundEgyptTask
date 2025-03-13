@@ -21,5 +21,6 @@
     <string name="view_in_360">View Experience in 360 degree</string>
     <string name="like">Like</string>
     <string name="retry">Retry</string>
+    <string name="most_recent">Most Recent</string>
 
 </resources>

@@ -7,9 +7,9 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Info
@@ -40,13 +40,18 @@ import com.example.aroundegypt.features.home.domain.models.ExperiencesResponse
 fun ExperienceCard(
     modifier: Modifier = Modifier,
     experience: ExperiencesResponse.Experience,
+    isRecommended: Boolean = false,
     onLikeClick: (String) -> Unit
 ) {
-
-    Column(modifier = modifier, verticalArrangement = Arrangement.spacedBy(16.dp)) {
-        ExperienceImage(experience)
+    Column(
+        modifier = modifier
+            .fillMaxWidth()
+            .height(214.dp), verticalArrangement = Arrangement.spacedBy(16.dp)
+    ) {
+        ExperienceImage(experience, isRecommended = isRecommended)
         Row(
-            modifier = Modifier.width(300.dp), horizontalArrangement = Arrangement.SpaceBetween
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween
         ) {
             Text(
                 text = experience.title,
@@ -54,61 +59,25 @@ fun ExperienceCard(
                 fontWeight = FontWeight.Bold,
                 fontSize = 14.sp
             )
-            LikeExperience(experience = experience, onLikeClick = {
-                onLikeClick(it)
-            })
+            LikeExperience(experience = experience, onLikeClick = { onLikeClick(it) })
         }
     }
-
-}
-
-@Composable
-fun LikeExperience(
-    modifier: Modifier = Modifier,
-    experience: ExperiencesResponse.Experience,
-    onLikeClick: (String) -> Unit
-) {
-    Row {
-        Text(
-            text = "${experience.likesNo}",
-            modifier = modifier.padding(end = 10.dp),
-            fontFamily = Gotham,
-            fontWeight = FontWeight.Medium,
-            fontSize = 14.sp
-        )
-        VectorResIcon(icon = if (!experience.isLiked) R.drawable.ic_outlined_like else R.drawable.ic_filed_like,
-            height = 18.dp,
-            contentDescription = stringResource(
-                R.string.like
-            ),
-            modifier = Modifier.clickable {
-                onLikeClick(experience.id)
-            })
-    }
-}
-
-@Preview(showBackground = true)
-@Composable
-private fun LikeExperiencePreview() {
-    LikeExperience(experience = experience, onLikeClick = {})
-
 }
 
 @Composable
 private fun ExperienceImage(
     experience: ExperiencesResponse.Experience,
     modifier: Modifier = Modifier,
+    isRecommended: Boolean,
     onViewIn360Click: () -> Unit = {}
 ) {
     Card(
-        modifier = modifier, shape = RoundedCornerShape(10.dp)
+        modifier = modifier
+            .fillMaxWidth()
+            .height(164.dp),
+        shape = RoundedCornerShape(10.dp)
     ) {
-        Box(
-            modifier = Modifier
-                .width(300.dp)
-                .height(160.dp)
-                .fillMaxSize()
-        ) {
+        Box(modifier = Modifier.fillMaxSize()) {
             AsyncImage(
                 model = ImageRequest
                     .Builder(LocalContext.current)
@@ -121,11 +90,14 @@ private fun ExperienceImage(
             ConstraintLayout(modifier = Modifier.fillMaxSize()) {
                 val (recommendedBadge, infoIcon, viewsCount, imageIcon, viewIn360) = createRefs()
 
+                if (isRecommended)
+                // Recommended Badge
                 RecommendedBadge(modifier = Modifier.constrainAs(recommendedBadge) {
                     top.linkTo(parent.top, margin = 10.dp)
                     start.linkTo(parent.start, margin = 10.dp)
                 })
 
+                // Info Icon
                 VectorIcon(
                     icon = Icons.Outlined.Info,
                     color = Color.White,
@@ -137,24 +109,29 @@ private fun ExperienceImage(
                     size = 20.dp
                 )
 
+                // Views Count
                 ViewsCount(
                     modifier = Modifier.constrainAs(viewsCount) {
                         bottom.linkTo(parent.bottom, margin = 5.dp)
                         start.linkTo(parent.start, margin = 10.dp)
-                    }, viewsNo = experience.viewsNo
+                    },
+                    viewsNo = experience.viewsNo
                 )
 
-                VectorResIcon(icon = R.drawable.ic_image,
+                // Image Icon
+                VectorResIcon(
+                    icon = R.drawable.ic_image,
                     height = 16.dp,
                     contentDescription = stringResource(R.string.image),
                     modifier = Modifier.constrainAs(imageIcon) {
                         bottom.linkTo(parent.bottom, margin = 10.dp)
                         end.linkTo(parent.end, margin = 10.dp)
+                    }
+                )
 
-                    })
-
-
-                VectorResIcon(icon = R.drawable.ic_360view,
+                // 360 View Icon
+                VectorResIcon(
+                    icon = R.drawable.ic_360view,
                     height = 37.dp,
                     contentDescription = stringResource(R.string.view_in_360),
                     modifier = Modifier
@@ -164,13 +141,12 @@ private fun ExperienceImage(
                             top.linkTo(parent.top)
                             start.linkTo(parent.start)
                             end.linkTo(parent.end)
-                        })
+                        }
+                )
             }
-
         }
     }
 }
-
 
 @Composable
 fun RecommendedBadge(modifier: Modifier = Modifier) {
@@ -223,6 +199,38 @@ fun ViewsCount(modifier: Modifier = Modifier, viewsNo: Int) {
             modifier = Modifier.padding(start = 10.dp)
         )
     }
+}
+
+@Composable
+fun LikeExperience(
+    modifier: Modifier = Modifier,
+    experience: ExperiencesResponse.Experience,
+    onLikeClick: (String) -> Unit
+) {
+    Row {
+        Text(
+            text = "${experience.likesNo}",
+            modifier = modifier.padding(end = 10.dp),
+            fontFamily = Gotham,
+            fontWeight = FontWeight.Medium,
+            fontSize = 14.sp
+        )
+        VectorResIcon(icon = if (!experience.isLiked) R.drawable.ic_outlined_like else R.drawable.ic_filed_like,
+            height = 18.dp,
+            contentDescription = stringResource(
+                R.string.like
+            ),
+            modifier = Modifier.clickable {
+                onLikeClick(experience.id)
+            })
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun LikeExperiencePreview() {
+    LikeExperience(experience = experience, onLikeClick = {})
+
 }
 
 @Preview(showBackground = true)
