@@ -13,4 +13,11 @@ class ExperiencesRemoteDS(private val networkProvider: IRestApiNetworkProvider) 
             responseType = ExperiencesResponseDto::class.java
         ).experiences ?: listOf()
     }
+
+    override suspend fun getMostRecentExperiences(): List<ExperiencesResponseDto.ExperienceDto> {
+        return networkProvider.get<ExperiencesResponseDto>(
+            pathUrl = "v2/experiences",
+            responseType = ExperiencesResponseDto::class.java
+        ).experiences ?: listOf()
+    }
 }

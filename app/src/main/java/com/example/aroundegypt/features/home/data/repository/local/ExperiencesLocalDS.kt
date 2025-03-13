@@ -14,9 +14,17 @@ class ExperiencesLocalDS(private val experiencesDao: ExperiencesDao) : IExperien
         }
     }
 
-    override suspend fun saveRecommendedExperiences(experiences: List<ExperienceEntity>) {
+    override suspend fun saveExperiences(experiences: List<ExperienceEntity>) {
         try {
-            return experiencesDao.saveRecommendedExperiences(experiences)
+            return experiencesDao.saveExperiences(experiences)
+        } catch (e: Exception) {
+            throw AroundEgyptException.Local(message = e.message)
+        }
+    }
+
+    override suspend fun getMostRecentExperiences(): List<ExperienceEntity> {
+        try {
+            return experiencesDao.getMostRecentExperiences()
         } catch (e: Exception) {
             throw AroundEgyptException.Local(message = e.message)
         }
