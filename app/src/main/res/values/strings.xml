@@ -22,5 +22,7 @@
     <string name="like">Like</string>
     <string name="retry">Retry</string>
     <string name="most_recent">Most Recent</string>
+    <string name="not_found">No results found</string>
+    <string name="not_found_message">Adjust filters to get better results</string>
 
 </resources>

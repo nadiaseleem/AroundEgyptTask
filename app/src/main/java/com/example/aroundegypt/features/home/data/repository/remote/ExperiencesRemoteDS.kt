@@ -20,4 +20,12 @@ class ExperiencesRemoteDS(private val networkProvider: IRestApiNetworkProvider) 
             responseType = ExperiencesResponseDto::class.java
         ).experiences ?: listOf()
     }
+
+    override suspend fun searchExperiences(query: String): List<ExperiencesResponseDto.ExperienceDto> {
+        return networkProvider.get<ExperiencesResponseDto>(
+            pathUrl = "v2/experiences",
+            queryParams = mapOf("filter[title]" to query),
+            responseType = ExperiencesResponseDto::class.java
+        ).experiences ?: listOf()
+    }
 }

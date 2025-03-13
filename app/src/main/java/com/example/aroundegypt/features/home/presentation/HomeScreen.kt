@@ -1,6 +1,7 @@
 package com.example.aroundegypt.features.home.presentation
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
@@ -22,7 +23,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -38,6 +41,7 @@ import com.example.aroundegypt.common.presentation.events.EventBus
 import com.example.aroundegypt.common.presentation.ui.theme.Gotham
 import com.example.aroundegypt.common.presentation.ui.theme.GothamRounded
 import com.example.aroundegypt.common.presentation.ui_components.HomeTopAppBar
+import com.example.aroundegypt.common.presentation.ui_components.ImageIcon
 import com.example.aroundegypt.features.home.presentation.ui_components.ExperienceCard
 import com.example.aroundegypt.features.home.presentation.ui_components.ShimmerListItem
 import kotlinx.serialization.Serializable
@@ -99,12 +103,13 @@ fun HomeScreenContent(
             DefaultHomeState(
                 state = state,
                 contentPadding = contentPadding,
-                isLoading = state.isLoading
             ) {
                 onLikeClick(it)
             }
         } else {
-            SearchState(contentPadding, isLoading = state.isLoading)
+            SearchState(contentPadding, state) {
+                onLikeClick(it)
+            }
         }
     }
 }
@@ -113,7 +118,6 @@ fun HomeScreenContent(
 private fun DefaultHomeState(
     contentPadding: PaddingValues,
     state: HomeViewStates,
-    isLoading: Boolean,
     onLikeClick: (String) -> Unit,
 ) {
     LazyColumn(
@@ -168,7 +172,7 @@ private fun DefaultHomeState(
                 horizontalArrangement = Arrangement.spacedBy(10.dp),
             ) {
                 items(state.recommendedExperiences) { experience ->
-                    ShimmerListItem(isLoading = isLoading, contentAfterLoading = {
+                    ShimmerListItem(isLoading = state.isLoading, contentAfterLoading = {
                         ExperienceCard(
                             modifier = Modifier.width(320.dp),
                             experience = experience,
@@ -197,7 +201,7 @@ private fun DefaultHomeState(
 
         // LazyColumn for Most Recent Experiences
         items(state.mostRecentExperiences) { experience ->
-            ShimmerListItem(isLoading = isLoading, contentAfterLoading = {
+            ShimmerListItem(isLoading = state.isLoading, contentAfterLoading = {
                 ExperienceCard(
                     experience = experience,
                     modifier = Modifier.padding(end = 18.dp)
@@ -208,9 +212,56 @@ private fun DefaultHomeState(
 }
 
 @Composable
-private fun SearchState(contentPadding: PaddingValues, isLoading: Boolean) {
-    LazyColumn(contentPadding = contentPadding) {
-
+private fun SearchState(
+    contentPadding: PaddingValues,
+    state: HomeViewStates,
+    onLikeClick: (String) -> Unit
+) {
+    LazyColumn(
+        modifier = Modifier
+            .padding(contentPadding)
+            .padding(horizontal = 18.dp)
+            .fillMaxWidth(),
+        verticalArrangement = Arrangement.spacedBy(10.dp)
+    ) {
+        if (state.experiencesSearchResult.isNotEmpty()) {
+            items(state.experiencesSearchResult) { experience ->
+                ShimmerListItem(isLoading = state.isLoading, contentAfterLoading = {
+                    ExperienceCard(
+                        experience = experience,
+                    ) { onLikeClick(it) }
+                })
+            }
+        } else if (state.isSearchPerformed && !state.isLoading) {
+            item {
+                Column(
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    modifier = Modifier.fillParentMaxSize()
+                ) {
+                    ImageIcon(
+                        icon = R.drawable.state_not_found,
+                        height = 200.dp,
+                        contentDescription = stringResource(
+                            R.string.not_found
+                        )
+                    )
+                    Text(
+                        text = stringResource(R.string.not_found),
+                        fontFamily = Gotham,
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 18.sp
+                    )
+                    Text(
+                        text = stringResource(R.string.not_found_message),
+                        fontFamily = Gotham,
+                        fontWeight = FontWeight.Medium,
+                        fontSize = 14.sp,
+                        color = Color.LightGray
+                    )
+                }
+            }
+        }
 
     }
 }

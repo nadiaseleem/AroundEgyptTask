@@ -29,4 +29,12 @@ class ExperiencesLocalDS(private val experiencesDao: ExperiencesDao) : IExperien
             throw AroundEgyptException.Local(message = e.message)
         }
     }
+
+    override suspend fun searchExperiences(query: String): List<ExperienceEntity> {
+        try {
+            return experiencesDao.searchExperiences(query)
+        } catch (e: Exception) {
+            throw AroundEgyptException.Local(message = e.message)
+        }
+    }
 }
