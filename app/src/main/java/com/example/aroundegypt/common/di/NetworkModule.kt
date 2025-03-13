@@ -1,14 +1,18 @@
 package com.example.aroundegypt.common.di
 
+import android.content.Context
 import android.util.Log
 import com.example.aroundegypt.BuildConfig
+import com.example.aroundegypt.common.data.internet_connection_Handler.InternetConnectivityChecker
 import com.example.aroundegypt.common.data.repository.remote.AroundEgyptApiService
 import com.example.aroundegypt.common.data.repository.remote.RetrofitRestApiNetworkProvider
+import com.example.aroundegypt.common.domain.internet_connection_handler.IInternetConnectivityChecker
 import com.example.aroundegypt.common.domain.repository.remote.IRestApiNetworkProvider
 import com.google.gson.Gson
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
+import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import okhttp3.ConnectionPool
 import okhttp3.OkHttpClient
@@ -85,4 +89,8 @@ object NetworkModule {
             }
         }
 
+    @Provides
+    fun provideInternetConnectivityChecker(@ApplicationContext context: Context): IInternetConnectivityChecker {
+        return InternetConnectivityChecker(context)
+    }
 }
