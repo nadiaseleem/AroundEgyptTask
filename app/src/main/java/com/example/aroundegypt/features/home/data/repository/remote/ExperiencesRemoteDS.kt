@@ -1,6 +1,7 @@
 package com.example.aroundegypt.features.home.data.repository.remote
 
 import com.example.aroundegypt.common.domain.repository.remote.IRestApiNetworkProvider
+import com.example.aroundegypt.features.home.data.models.dto.ExperienceDetailsResponseDto
 import com.example.aroundegypt.features.home.data.models.dto.ExperienceDto
 import com.example.aroundegypt.features.home.data.models.dto.ExperiencesResponseDto
 import com.example.aroundegypt.features.home.data.models.dto.UpdateLikeResponseDto
@@ -39,6 +40,9 @@ class ExperiencesRemoteDS(private val networkProvider: IRestApiNetworkProvider) 
     }
 
     override suspend fun getExperienceById(id: String): ExperienceDto? {
-        TODO("Not yet implemented")
+        return networkProvider.get<ExperienceDetailsResponseDto>(
+            pathUrl = "v2/experiences/$id",
+            responseType = ExperienceDetailsResponseDto::class.java
+        ).data
     }
 }
