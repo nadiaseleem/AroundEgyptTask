@@ -1,5 +1,5 @@
 [versions]
-agp = "8.8.1"
+agp = "8.8.2"
 constraintlayoutCompose = "1.1.1"
 kotlin = "2.0.20"
 coreKtx = "1.15.0"
@@ -8,7 +8,7 @@ junitVersion = "1.2.1"
 espressoCore = "3.6.1"
 lifecycleRuntimeKtx = "2.8.7"
 activityCompose = "1.10.1"
-composeBom = "2025.02.00"
+composeBom = "2025.03.00"
 converterGson = "2.11.0"
 hiltAndroidCompiler = "2.51.1"
 kotlinxSerializationJson = "1.8.0"
@@ -18,8 +18,7 @@ coilCompose = "3.1.0"
 ksp = "2.0.20-1.0.24"
 room = "2.6.1"
 hiltNavigationFragment = "1.2.0"
-navigationCompose = "2.8.8"
-shimmer = "1.0.0"
+navigationCompose = "2.8.9"
 [libraries]
 androidx-constraintlayout-compose = { module = "androidx.constraintlayout:constraintlayout-compose", version.ref = "constraintlayoutCompose" }
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
