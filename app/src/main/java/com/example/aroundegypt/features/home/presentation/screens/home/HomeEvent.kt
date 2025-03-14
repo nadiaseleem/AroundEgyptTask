@@ -1,4 +1,4 @@
-package com.example.aroundegypt.features.home.presentation
+package com.example.aroundegypt.features.home.presentation.screens.home
 
 import com.example.aroundegypt.common.presentation.events.UIEvent
 
