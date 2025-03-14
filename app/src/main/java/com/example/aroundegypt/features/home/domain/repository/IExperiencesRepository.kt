@@ -9,5 +9,6 @@ interface IExperiencesRepository {
     suspend fun likeExperience(id: String): Int
     suspend fun getLikedExperiences(): List<Experience>
     suspend fun saveLikedExperiences(likedExperiences: List<Experience>)
-
+    suspend fun getExperienceById(id: String): Experience?
+    suspend fun getExperienceFromLocal(id: String): Experience?
 }

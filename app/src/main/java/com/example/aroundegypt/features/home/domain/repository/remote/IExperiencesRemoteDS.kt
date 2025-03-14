@@ -7,6 +7,5 @@ interface IExperiencesRemoteDS {
     suspend fun getMostRecentExperiences(): List<ExperienceDto>
     suspend fun searchExperiences(query: String): List<ExperienceDto>
     suspend fun likeExperience(id: String): Int
-
     suspend fun getExperienceById(id: String): ExperienceDto?
 }

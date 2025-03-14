@@ -25,4 +25,8 @@ interface ExperiencesDao {
 
     @Query("select * from ExperienceEntity where is_liked = 1")
     suspend fun getLikedExperiences(): List<ExperienceEntity>
+
+
+    @Query("select * from ExperienceEntity where id = :id")
+    suspend fun getExperienceById(id: String): ExperienceEntity?
 }

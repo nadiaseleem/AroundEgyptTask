@@ -53,4 +53,12 @@ class ExperiencesLocalDS(private val experiencesDao: ExperiencesDao) : IExperien
     override suspend fun saveLikedExperiences(likedExperiences: List<ExperienceEntity>) {
         experiencesDao.saveExperiences(likedExperiences)
     }
+
+    override suspend fun getExperienceById(id: String): ExperienceEntity? {
+        try {
+            return experiencesDao.getExperienceById(id)
+        } catch (e: Exception) {
+            throw AroundEgyptException.Local(message = e.message)
+        }
+    }
 }

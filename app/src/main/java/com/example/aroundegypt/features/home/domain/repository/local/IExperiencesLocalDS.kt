@@ -10,4 +10,6 @@ interface IExperiencesLocalDS {
     suspend fun likeExperience(id: String, updatedLikeNo: Int)
     suspend fun getLikedExperiences(): List<ExperienceEntity>
     suspend fun saveLikedExperiences(likedExperiences: List<ExperienceEntity>)
+    suspend fun getExperienceById(id: String): ExperienceEntity?
+
 }

@@ -9,6 +9,8 @@ import com.example.aroundegypt.features.home.data.repository.remote.ExperiencesR
 import com.example.aroundegypt.features.home.domain.repository.IExperiencesRepository
 import com.example.aroundegypt.features.home.domain.repository.local.IExperiencesLocalDS
 import com.example.aroundegypt.features.home.domain.repository.remote.IExperiencesRemoteDS
+import com.example.aroundegypt.features.home.domain.usecases.GetExperienceFromLocalUC
+import com.example.aroundegypt.features.home.domain.usecases.GetExperienceUC
 import com.example.aroundegypt.features.home.domain.usecases.GetLikedExperiencesUC
 import com.example.aroundegypt.features.home.domain.usecases.GetMostRecentExperiencesUC
 import com.example.aroundegypt.features.home.domain.usecases.GetRecommendedExperiencesUC
@@ -81,4 +83,13 @@ internal object ExperiencesModule {
         return SaveLikedExperiencesUC(repository = experiencesRepository)
     }
 
+    @Provides
+    fun provideGetExperienceUC(experiencesRepository: IExperiencesRepository): GetExperienceUC {
+        return GetExperienceUC(repository = experiencesRepository)
+    }
+
+    @Provides
+    fun provideGetExperienceFromLocalUC(experiencesRepository: IExperiencesRepository): GetExperienceFromLocalUC {
+        return GetExperienceFromLocalUC(repository = experiencesRepository)
+    }
 }

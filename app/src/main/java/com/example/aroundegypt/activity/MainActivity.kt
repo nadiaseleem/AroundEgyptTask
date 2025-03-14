@@ -14,10 +14,13 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.toRoute
 import com.example.aroundegypt.common.presentation.ui.theme.AroundEgyptTheme
 import com.example.aroundegypt.common.presentation.ui_components.NavigationDrawerSheet
-import com.example.aroundegypt.features.home.presentation.HomeRoute
-import com.example.aroundegypt.features.home.presentation.HomeScreen
+import com.example.aroundegypt.features.home.presentation.screens.experience.ExperienceRoute
+import com.example.aroundegypt.features.home.presentation.screens.experience.ExperienceScreen
+import com.example.aroundegypt.features.home.presentation.screens.home.HomeRoute
+import com.example.aroundegypt.features.home.presentation.screens.home.HomeScreen
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
@@ -54,9 +57,15 @@ private fun AroundEgyptNavigation(drawerState: DrawerState) {
     val navController = rememberNavController()
     NavHost(navController, startDestination = HomeRoute) {
         composable<HomeRoute> {
-            HomeScreen(
-                drawerState = drawerState,
-                onExperienceClick = {}
+            HomeScreen(drawerState = drawerState) {
+                navController.navigate(ExperienceRoute(it))
+            }
+        }
+        composable<ExperienceRoute> {
+            val args = it.toRoute<ExperienceRoute>()
+            ExperienceScreen(
+                onBack = { navController.popBackStack() },
+                id = args.id
             )
         }
     }

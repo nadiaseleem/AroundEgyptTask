@@ -67,4 +67,18 @@ class ExperiencesRepository(
         val likedExperiencesEntities = likedExperiences.map { ExperienceMapper.domainToEntity(it) }
         localDS.saveLikedExperiences(likedExperiencesEntities)
     }
+
+    override suspend fun getExperienceById(id: String): Experience? {
+        if (connectivityChecker.isInternetAvailable()) {
+            val experiencesDto = remoteDS.getExperienceById(id)
+            val experience = experiencesDto?.let { ExperienceMapper.dtoToDomain(it) }
+            return experience
+        } else {
+            return localDS.getExperienceById(id)?.let { ExperienceMapper.entityToDomain(it) }
+        }
+    }
+
+    override suspend fun getExperienceFromLocal(id: String): Experience? {
+        return localDS.getExperienceById(id)?.let { ExperienceMapper.entityToDomain(it) }
+    }
 }
