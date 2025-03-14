@@ -9,5 +9,6 @@ data class HomeViewStates(
     val experiencesSearchResult: List<ExperiencesResponse.Experience> = emptyList(),
     val errorMessage: String? = null,
     val searchQuery: String = "",
-    val isSearchPerformed: Boolean = false
+    val isSearchPerformed: Boolean = false,
+    val likedExperiences: List<ExperiencesResponse.Experience> = emptyList(),
 )

@@ -20,4 +20,9 @@ interface ExperiencesDao {
     @Query("select * from ExperienceEntity where title like '%' || :query || '%'")
     suspend fun searchExperiences(query: String): List<ExperienceEntity>
 
+    @Query("update ExperienceEntity set is_liked=1 , likes_no=:updatedLikeNo where id=:id")
+    suspend fun likeExperience(id: String, updatedLikeNo: Int)
+
+    @Query("select * from ExperienceEntity where is_liked = 1")
+    suspend fun getLikedExperiences(): List<ExperienceEntity>
 }

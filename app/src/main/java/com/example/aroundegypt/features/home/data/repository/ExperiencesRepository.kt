@@ -51,4 +51,20 @@ class ExperiencesRepository(
             return localDS.searchExperiences(query).map { ExperienceMapper.entityToDomain(it) }
         }
     }
+
+    override suspend fun likeExperience(id: String): Int {
+        val updatedLikeNo = remoteDS.likeExperience(id)
+        localDS.likeExperience(id, updatedLikeNo)
+        return updatedLikeNo
+
+    }
+
+    override suspend fun getLikedExperiences(): List<ExperiencesResponse.Experience> {
+        return localDS.getLikedExperiences().map { ExperienceMapper.entityToDomain(it) }
+    }
+
+    override suspend fun saveLikedExperiences(likedExperiences: List<ExperiencesResponse.Experience>) {
+        val likedExperiencesEntities = likedExperiences.map { ExperienceMapper.domainToEntity(it) }
+        localDS.saveLikedExperiences(likedExperiencesEntities)
+    }
 }

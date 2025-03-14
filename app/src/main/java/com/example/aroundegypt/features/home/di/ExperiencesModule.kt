@@ -9,8 +9,11 @@ import com.example.aroundegypt.features.home.data.repository.remote.ExperiencesR
 import com.example.aroundegypt.features.home.domain.repository.IExperiencesRepository
 import com.example.aroundegypt.features.home.domain.repository.local.IExperiencesLocalDS
 import com.example.aroundegypt.features.home.domain.repository.remote.IExperiencesRemoteDS
+import com.example.aroundegypt.features.home.domain.usecases.GetLikedExperiencesUC
 import com.example.aroundegypt.features.home.domain.usecases.GetMostRecentExperiencesUC
 import com.example.aroundegypt.features.home.domain.usecases.GetRecommendedExperiencesUC
+import com.example.aroundegypt.features.home.domain.usecases.LikeExperienceUC
+import com.example.aroundegypt.features.home.domain.usecases.SaveLikedExperiencesUC
 import com.example.aroundegypt.features.home.domain.usecases.SearchExperiencesUC
 import dagger.Module
 import dagger.Provides
@@ -62,4 +65,20 @@ internal object ExperiencesModule {
     fun provideSearchExperiencesUC(experiencesRepository: IExperiencesRepository): SearchExperiencesUC {
         return SearchExperiencesUC(repository = experiencesRepository)
     }
+
+    @Provides
+    fun provideLikeExperienceUC(experiencesRepository: IExperiencesRepository): LikeExperienceUC {
+        return LikeExperienceUC(repository = experiencesRepository)
+    }
+
+    @Provides
+    fun provideGetLikedExperiencesUC(experiencesRepository: IExperiencesRepository): GetLikedExperiencesUC {
+        return GetLikedExperiencesUC(repository = experiencesRepository)
+    }
+
+    @Provides
+    fun provideSaveLikedExperiencesUC(experiencesRepository: IExperiencesRepository): SaveLikedExperiencesUC {
+        return SaveLikedExperiencesUC(repository = experiencesRepository)
+    }
+
 }
