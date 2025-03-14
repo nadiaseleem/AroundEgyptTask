@@ -8,7 +8,7 @@ import com.example.aroundegypt.features.home.data.models.entity.ExperienceEntity
 
 @Dao
 interface ExperiencesDao {
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun saveExperiences(experiences: List<ExperienceEntity>)
 
     @Query("select * from ExperienceEntity where recommended=1")
