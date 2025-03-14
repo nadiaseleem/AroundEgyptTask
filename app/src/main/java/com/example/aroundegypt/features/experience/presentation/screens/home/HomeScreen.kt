@@ -1,4 +1,4 @@
-package com.example.aroundegypt.features.home.presentation
+package com.example.aroundegypt.features.experience.presentation.screens.home
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
@@ -34,12 +34,13 @@ import com.example.aroundegypt.common.presentation.events.EventBus
 import com.example.aroundegypt.common.presentation.ui.theme.Gotham
 import com.example.aroundegypt.common.presentation.ui.theme.GothamRounded
 import com.example.aroundegypt.common.presentation.ui_components.HomeTopAppBar
-import com.example.aroundegypt.features.home.domain.models.ExperiencesResponse
-import com.example.aroundegypt.features.home.presentation.ui_components.EmptyState
-import com.example.aroundegypt.features.home.presentation.ui_components.ExperienceCard
-import com.example.aroundegypt.features.home.presentation.ui_components.ExperienceList
-import com.example.aroundegypt.features.home.presentation.ui_components.ShimmerList
-import com.example.aroundegypt.features.home.presentation.ui_components.ShimmerListItem
+import com.example.aroundegypt.features.experience.domain.models.ExperiencesResponse
+import com.example.aroundegypt.features.experience.presentation.HomeEvent
+import com.example.aroundegypt.features.experience.presentation.ui_components.EmptyState
+import com.example.aroundegypt.features.experience.presentation.ui_components.ExperienceCard
+import com.example.aroundegypt.features.experience.presentation.ui_components.ExperienceList
+import com.example.aroundegypt.features.experience.presentation.ui_components.ShimmerList
+import com.example.aroundegypt.features.experience.presentation.ui_components.ShimmerListItem
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -188,7 +189,9 @@ private fun DefaultHomeState(
         // Most Recent Experiences List
         if (state.isLoading) {
             items(5) {
-                ShimmerListItem()
+                ShimmerListItem(
+                    modifier = Modifier.padding(end = 18.dp)
+                )
             }
         } else {
             items(state.mostRecentExperiences) { experience ->
