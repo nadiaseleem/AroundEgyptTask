@@ -38,8 +38,8 @@ import com.example.aroundegypt.features.home.domain.models.ExperiencesResponse
 import com.example.aroundegypt.features.home.presentation.ui_components.EmptyState
 import com.example.aroundegypt.features.home.presentation.ui_components.ExperienceCard
 import com.example.aroundegypt.features.home.presentation.ui_components.ExperienceList
+import com.example.aroundegypt.features.home.presentation.ui_components.ShimmerCard
 import com.example.aroundegypt.features.home.presentation.ui_components.ShimmerList
-import com.example.aroundegypt.features.home.presentation.ui_components.ShimmerListItem
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -188,7 +188,7 @@ private fun DefaultHomeState(
         // Most Recent Experiences List
         if (state.isLoading) {
             items(5) {
-                ShimmerListItem()
+                ShimmerCard(modifier = Modifier.padding(end = 15.dp))
             }
         } else {
             items(state.mostRecentExperiences) { experience ->
@@ -218,7 +218,7 @@ private fun SearchState(
         // Show shimmer loading if data is loading
         if (state.isLoading) {
             items(5) {
-                ShimmerListItem()
+                ShimmerCard()
             }
         }
 
