@@ -1,17 +1,12 @@
 package com.example.aroundegypt.features.home.presentation
 
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawing
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.DrawerState
 import androidx.compose.material3.DrawerValue
@@ -23,9 +18,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -41,8 +34,11 @@ import com.example.aroundegypt.common.presentation.events.EventBus
 import com.example.aroundegypt.common.presentation.ui.theme.Gotham
 import com.example.aroundegypt.common.presentation.ui.theme.GothamRounded
 import com.example.aroundegypt.common.presentation.ui_components.HomeTopAppBar
-import com.example.aroundegypt.common.presentation.ui_components.ImageIcon
+import com.example.aroundegypt.features.home.domain.models.ExperiencesResponse
+import com.example.aroundegypt.features.home.presentation.ui_components.EmptyState
 import com.example.aroundegypt.features.home.presentation.ui_components.ExperienceCard
+import com.example.aroundegypt.features.home.presentation.ui_components.ExperienceList
+import com.example.aroundegypt.features.home.presentation.ui_components.ShimmerList
 import com.example.aroundegypt.features.home.presentation.ui_components.ShimmerListItem
 import kotlinx.serialization.Serializable
 
@@ -80,7 +76,7 @@ fun HomeScreenContent(
     state: HomeViewStates,
     drawerState: DrawerState,
     snackbarHostState: SnackbarHostState,
-    onLikeClick: (String) -> Unit,
+    onLikeClick: (ExperiencesResponse.Experience) -> Unit,
     onSearchQueryChange: (String) -> Unit,
     onSearchClick: () -> Unit,
 ) {
@@ -118,7 +114,7 @@ fun HomeScreenContent(
 private fun DefaultHomeState(
     contentPadding: PaddingValues,
     state: HomeViewStates,
-    onLikeClick: (String) -> Unit,
+    onLikeClick: (ExperiencesResponse.Experience) -> Unit,
 ) {
     LazyColumn(
         modifier = Modifier
@@ -165,29 +161,19 @@ private fun DefaultHomeState(
             )
         }
 
-        // LazyRow for Recommended Experiences
+        // Recommended Experiences List
         item {
-            LazyRow(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(10.dp),
-            ) {
-                items(state.recommendedExperiences) { experience ->
-                    ShimmerListItem(isLoading = state.isLoading, contentAfterLoading = {
-                        ExperienceCard(
-                            modifier = Modifier.width(320.dp),
-                            experience = experience,
-                            isRecommended = true,
-                            onLikeClick = { onLikeClick(it) }
-                        )
-                    })
-                }
+            ShimmerList(state.isLoading)
+            if (!state.isLoading) {
+                ExperienceList(
+                    experiences = state.recommendedExperiences,
+                    isHorizontal = true,
+                    isRecommended = true,
+                    onLikeClick = onLikeClick
+                )
             }
         }
 
-        // Spacer
-        item {
-            Spacer(modifier = Modifier.height(10.dp))
-        }
 
         // Most Recent Text
         item {
@@ -199,23 +185,28 @@ private fun DefaultHomeState(
             )
         }
 
-        // LazyColumn for Most Recent Experiences
-        items(state.mostRecentExperiences) { experience ->
-            ShimmerListItem(isLoading = state.isLoading, contentAfterLoading = {
+        // Most Recent Experiences List
+        if (state.isLoading) {
+            items(5) {
+                ShimmerListItem()
+            }
+        } else {
+            items(state.mostRecentExperiences) { experience ->
                 ExperienceCard(
                     experience = experience,
                     modifier = Modifier.padding(end = 18.dp)
                 ) { onLikeClick(it) }
-            })
+            }
         }
     }
 }
+
 
 @Composable
 private fun SearchState(
     contentPadding: PaddingValues,
     state: HomeViewStates,
-    onLikeClick: (String) -> Unit
+    onLikeClick: (ExperiencesResponse.Experience) -> Unit
 ) {
     LazyColumn(
         modifier = Modifier
@@ -224,42 +215,31 @@ private fun SearchState(
             .fillMaxWidth(),
         verticalArrangement = Arrangement.spacedBy(10.dp)
     ) {
+        // Show shimmer loading if data is loading
+        if (state.isLoading) {
+            items(5) {
+                ShimmerListItem()
+            }
+        }
+
+        // Show search results if available
         if (state.experiencesSearchResult.isNotEmpty()) {
             items(state.experiencesSearchResult) { experience ->
-                ShimmerListItem(isLoading = state.isLoading, contentAfterLoading = {
-                    ExperienceCard(
-                        experience = experience,
-                    ) { onLikeClick(it) }
-                })
+                ExperienceCard(
+                    experience = experience,
+                ) { onLikeClick(it) }
             }
-        } else if (state.isSearchPerformed && !state.isLoading) {
+        }
+
+        // Show empty state if no results and search is performed
+        else if (state.isSearchPerformed && !state.isLoading) {
             item {
-                Column(
-                    verticalArrangement = Arrangement.Center,
-                    horizontalAlignment = Alignment.CenterHorizontally,
+                EmptyState(
+                    iconResId = R.drawable.state_not_found,
+                    title = stringResource(R.string.not_found),
+                    message = stringResource(R.string.not_found_message),
                     modifier = Modifier.fillParentMaxSize()
-                ) {
-                    ImageIcon(
-                        icon = R.drawable.state_not_found,
-                        height = 200.dp,
-                        contentDescription = stringResource(
-                            R.string.not_found
-                        )
-                    )
-                    Text(
-                        text = stringResource(R.string.not_found),
-                        fontFamily = Gotham,
-                        fontWeight = FontWeight.Bold,
-                        fontSize = 18.sp
-                    )
-                    Text(
-                        text = stringResource(R.string.not_found_message),
-                        fontFamily = Gotham,
-                        fontWeight = FontWeight.Medium,
-                        fontSize = 14.sp,
-                        color = Color.LightGray
-                    )
-                }
+                )
             }
         }
 

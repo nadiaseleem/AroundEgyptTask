@@ -42,7 +42,7 @@ fun ExperienceCard(
     modifier: Modifier = Modifier,
     experience: ExperiencesResponse.Experience,
     isRecommended: Boolean = false,
-    onLikeClick: (String) -> Unit
+    onLikeClick: (ExperiencesResponse.Experience) -> Unit
 ) {
     Column(
         modifier = modifier
@@ -60,9 +60,13 @@ fun ExperienceCard(
                 fontWeight = FontWeight.Bold,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
-                fontSize = 14.sp
+                fontSize = 14.sp,
+                modifier = Modifier.weight(2f)
             )
-            LikeExperience(experience = experience, onLikeClick = { onLikeClick(it) })
+            LikeExperience(
+                modifier = Modifier.weight(1f),
+                experience = experience,
+                onLikeClick = { onLikeClick(it) })
         }
     }
 }
@@ -93,12 +97,12 @@ private fun ExperienceImage(
             ConstraintLayout(modifier = Modifier.fillMaxSize()) {
                 val (recommendedBadge, infoIcon, viewsCount, imageIcon, viewIn360) = createRefs()
 
-                if (isRecommended)
                 // Recommended Badge
-                RecommendedBadge(modifier = Modifier.constrainAs(recommendedBadge) {
-                    top.linkTo(parent.top, margin = 10.dp)
-                    start.linkTo(parent.start, margin = 10.dp)
-                })
+                if (isRecommended)
+                    RecommendedBadge(modifier = Modifier.constrainAs(recommendedBadge) {
+                        top.linkTo(parent.top, margin = 10.dp)
+                        start.linkTo(parent.start, margin = 10.dp)
+                    })
 
                 // Info Icon
                 VectorIcon(
@@ -208,12 +212,12 @@ fun ViewsCount(modifier: Modifier = Modifier, viewsNo: Int) {
 fun LikeExperience(
     modifier: Modifier = Modifier,
     experience: ExperiencesResponse.Experience,
-    onLikeClick: (String) -> Unit
+    onLikeClick: (ExperiencesResponse.Experience) -> Unit
 ) {
-    Row {
+    Row(modifier = modifier, horizontalArrangement = Arrangement.End) {
         Text(
             text = "${experience.likesNo}",
-            modifier = modifier.padding(end = 10.dp),
+            modifier = Modifier.padding(end = 10.dp),
             fontFamily = Gotham,
             fontWeight = FontWeight.Medium,
             fontSize = 14.sp
@@ -223,8 +227,8 @@ fun LikeExperience(
             contentDescription = stringResource(
                 R.string.like
             ),
-            modifier = Modifier.clickable {
-                onLikeClick(experience.id)
+            modifier = Modifier.clickable(enabled = !experience.isLiked) {
+                onLikeClick(experience)
             })
     }
 }
