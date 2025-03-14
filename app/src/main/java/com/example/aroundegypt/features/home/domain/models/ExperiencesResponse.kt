@@ -1,14 +1,9 @@
 package com.example.aroundegypt.features.home.domain.models
 
 
-import android.os.Parcelable
-import kotlinx.parcelize.Parcelize
-
-@Parcelize
 data class ExperiencesResponse(
     val experiences: List<Experience>
-) : Parcelable {
-    @Parcelize
+) {
     data class Experience(
         val address: String,
         val audioUrl: String,
@@ -24,8 +19,8 @@ data class ExperiencesResponse(
         val hasAudio: Boolean,
         val hasVideo: Int,
         val id: String,
-        val isLiked: Boolean,
-        val likesNo: Int,
+        var isLiked: Boolean,
+        var likesNo: Int,
         val openingHours: OpeningHours,
         val period: Period,
         val rating: Int,
@@ -39,30 +34,27 @@ data class ExperiencesResponse(
         val tourHtml: String,
         val translatedOpeningHours: TranslatedOpeningHours,
         val viewsNo: Int
-    ) : Parcelable {
-        @Parcelize
+    ) {
         data class City(
             val disable: Boolean,
             val id: Int,
             val name: String,
             val topPick: Int
-        ) : Parcelable
+        )
 
-        @Parcelize
         data class Era(
             val createdAt: String,
             val id: String,
             val updatedAt: String,
             val value: String
-        ) : Parcelable
+        )
 
-        @Parcelize
+
         data class GmapLocation(
             val coordinates: List<Double>,
             val type: String
-        ) : Parcelable
+        )
 
-        @Parcelize
         data class OpeningHours(
             val friday: List<String>,
             val monday: List<String>,
@@ -71,17 +63,15 @@ data class ExperiencesResponse(
             val thursday: List<String>,
             val tuesday: List<String>,
             val wednesday: List<String>
-        ) : Parcelable
+        )
 
-        @Parcelize
         data class Period(
             val createdAt: String,
             val id: String,
             val updatedAt: String,
             val value: String
-        ) : Parcelable
+        )
 
-        @Parcelize
         data class Review(
             val comment: String,
             val createdAt: String,
@@ -89,23 +79,20 @@ data class ExperiencesResponse(
             val id: String,
             val name: String,
             val rating: Int
-        ) : Parcelable
+        )
 
-        @Parcelize
         data class Tag(
             val disable: Boolean,
             val id: Int,
             val name: String,
             val topPick: Int
-        ) : Parcelable
+        )
 
-        @Parcelize
         data class TicketPrice(
             val price: Int,
             val type: String
-        ) : Parcelable
+        )
 
-        @Parcelize
         data class TranslatedOpeningHours(
             val friday: Friday,
             val monday: Monday,
@@ -114,48 +101,48 @@ data class ExperiencesResponse(
             val thursday: Thursday,
             val tuesday: Tuesday,
             val wednesday: Wednesday
-        ) : Parcelable {
-            @Parcelize
+        ) {
+
             data class Friday(
                 val day: String,
                 val time: String
-            ) : Parcelable
+            )
 
-            @Parcelize
+
             data class Monday(
                 val day: String,
                 val time: String
-            ) : Parcelable
+            )
 
-            @Parcelize
+
             data class Saturday(
                 val day: String,
                 val time: String
-            ) : Parcelable
+            )
 
-            @Parcelize
+
             data class Sunday(
                 val day: String,
                 val time: String
-            ) : Parcelable
+            )
 
-            @Parcelize
+
             data class Thursday(
                 val day: String,
                 val time: String
-            ) : Parcelable
+            )
 
-            @Parcelize
+
             data class Tuesday(
                 val day: String,
                 val time: String
-            ) : Parcelable
+            )
 
-            @Parcelize
+
             data class Wednesday(
                 val day: String,
                 val time: String
-            ) : Parcelable
+            )
         }
     }
 }

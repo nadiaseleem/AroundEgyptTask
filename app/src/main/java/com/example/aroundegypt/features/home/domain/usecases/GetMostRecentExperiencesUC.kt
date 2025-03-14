@@ -16,14 +16,13 @@ class GetMostRecentExperiencesUC(private val repository: IExperiencesRepository)
         emit(Resource.Loading())
         val experiences = repository.getMostRecentExperiences()
         emit(Resource.Success(experiences))
-        kotlinx.coroutines.delay(1000)
     }.catch { throwable ->
         val exception =
             when (throwable) {
                 is AroundEgyptException -> throwable
                 is UnknownHostException -> AroundEgyptException.Network.UnknownHost(errorMessage = throwable.localizedMessage)
                 is SocketTimeoutException -> AroundEgyptException.Network.Timeout(errorMessage = throwable.localizedMessage)
-                else -> AroundEgyptException.UnknownException("Unknown error in GetRecommendedExperiencesUC: $throwable")
+                else -> AroundEgyptException.UnknownException("Unknown error in GetMostRecentExperiencesUC: $throwable")
             }
         emit(Resource.Failure(exception))
     }.onCompletion {

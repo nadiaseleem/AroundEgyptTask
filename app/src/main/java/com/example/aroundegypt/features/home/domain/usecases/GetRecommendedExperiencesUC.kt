@@ -16,7 +16,6 @@ class GetRecommendedExperiencesUC(private val repository: IExperiencesRepository
         emit(Resource.Loading())
         val experiences = repository.getRecommendedExperiences()
         emit(Resource.Success(experiences))
-        kotlinx.coroutines.delay(1000)
     }.catch { throwable ->
         val exception =
             when (throwable) {
