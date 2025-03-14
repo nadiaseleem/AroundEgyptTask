@@ -1,13 +1,13 @@
 package com.example.aroundegypt.features.home.domain.repository
 
-import com.example.aroundegypt.features.home.domain.models.ExperiencesResponse
+import com.example.aroundegypt.features.home.domain.models.Experience
 
 interface IExperiencesRepository {
-    suspend fun getRecommendedExperiences(): List<ExperiencesResponse.Experience>
-    suspend fun getMostRecentExperiences(): List<ExperiencesResponse.Experience>
-    suspend fun searchExperiences(query: String): List<ExperiencesResponse.Experience>
+    suspend fun getRecommendedExperiences(): List<Experience>
+    suspend fun getMostRecentExperiences(): List<Experience>
+    suspend fun searchExperiences(query: String): List<Experience>
     suspend fun likeExperience(id: String): Int
-    suspend fun getLikedExperiences(): List<ExperiencesResponse.Experience>
-    suspend fun saveLikedExperiences(likedExperiences: List<ExperiencesResponse.Experience>)
+    suspend fun getLikedExperiences(): List<Experience>
+    suspend fun saveLikedExperiences(likedExperiences: List<Experience>)
 
 }

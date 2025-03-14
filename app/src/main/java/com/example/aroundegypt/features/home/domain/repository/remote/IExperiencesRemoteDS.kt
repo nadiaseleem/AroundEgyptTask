@@ -1,12 +1,12 @@
 package com.example.aroundegypt.features.home.domain.repository.remote
 
-import com.example.aroundegypt.features.home.data.models.dto.ExperiencesResponseDto
+import com.example.aroundegypt.features.home.data.models.dto.ExperienceDto
 
 interface IExperiencesRemoteDS {
-    suspend fun getRecommendedExperiences(): List<ExperiencesResponseDto.ExperienceDto>
-    suspend fun getMostRecentExperiences(): List<ExperiencesResponseDto.ExperienceDto>
-    suspend fun searchExperiences(query: String): List<ExperiencesResponseDto.ExperienceDto>
+    suspend fun getRecommendedExperiences(): List<ExperienceDto>
+    suspend fun getMostRecentExperiences(): List<ExperienceDto>
+    suspend fun searchExperiences(query: String): List<ExperienceDto>
     suspend fun likeExperience(id: String): Int
 
-    suspend fun getExperienceById(id: String): ExperiencesResponseDto.ExperienceDto?
+    suspend fun getExperienceById(id: String): ExperienceDto?
 }

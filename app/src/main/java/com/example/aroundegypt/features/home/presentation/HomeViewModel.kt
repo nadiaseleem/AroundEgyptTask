@@ -5,7 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.aroundegypt.common.data.models.state.Resource
 import com.example.aroundegypt.common.presentation.viewmodel.sendEvent
-import com.example.aroundegypt.features.home.domain.models.ExperiencesResponse
+import com.example.aroundegypt.features.home.domain.models.Experience
 import com.example.aroundegypt.features.home.domain.usecases.GetLikedExperiencesUC
 import com.example.aroundegypt.features.home.domain.usecases.GetMostRecentExperiencesUC
 import com.example.aroundegypt.features.home.domain.usecases.GetRecommendedExperiencesUC
@@ -148,7 +148,7 @@ class HomeViewModel @Inject constructor(
     private var lastClickTime = 0L
     private val debounceTime = 500L
 
-    fun likeExperience(experience: ExperiencesResponse.Experience) {
+    fun likeExperience(experience: Experience) {
         val currentTime = System.currentTimeMillis()
         if (currentTime - lastClickTime < debounceTime) {
             return // Ignore rapid clicks
