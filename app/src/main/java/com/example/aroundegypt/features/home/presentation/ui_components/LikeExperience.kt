@@ -4,6 +4,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -46,7 +47,7 @@ fun LikeExperience(
 private fun LikesCount(experience: Experience, fontSize: TextUnit = 14.sp) {
     Text(
         text = "${experience.likesNo}",
-        modifier = Modifier.padding(end = 10.dp),
+        modifier = Modifier.wrapContentWidth(),
         fontFamily = Gotham,
         fontWeight = FontWeight.Medium,
         fontSize = fontSize
