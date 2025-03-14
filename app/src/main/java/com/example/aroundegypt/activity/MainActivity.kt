@@ -55,7 +55,8 @@ private fun AroundEgyptNavigation(drawerState: DrawerState) {
     NavHost(navController, startDestination = HomeRoute) {
         composable<HomeRoute> {
             HomeScreen(
-                drawerState = drawerState
+                drawerState = drawerState,
+                onExperienceClick = {}
             )
         }
     }

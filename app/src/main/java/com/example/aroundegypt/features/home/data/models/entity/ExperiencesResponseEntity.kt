@@ -37,7 +37,6 @@ data class ExperienceEntity(
     val is_liked: Boolean,
     val likes_no: Int,
     // Embed this object
-    @Embedded(prefix = "hours_") val opening_hours: OpeningHoursEntity,
     @Embedded(prefix = "period_") val period: PeriodEntity,
     val rating: Int,
     val recommended: Int,
@@ -51,8 +50,6 @@ data class ExperienceEntity(
     val ticket_prices: List<TicketPriceEntity>,
     val title: String,
     val tour_html: String,
-    // Embed this object
-    @Embedded(prefix = "trans_") val translated_opening_hours: TranslatedOpeningHoursEntity,
     val views_no: Int
 )
 
@@ -75,17 +72,6 @@ data class GmapLocationEntity(
     // Convert List<Double> to JSON string
     val coordinates: List<Double>,
     val type: String
-)
-
-data class OpeningHoursEntity(
-    // Convert these to JSON strings
-    val friday: List<String>,
-    val monday: List<String>,
-    val saturday: List<String>,
-    val sunday: List<String>,
-    val thursday: List<String>,
-    val tuesday: List<String>,
-    val wednesday: List<String>
 )
 
 data class PeriodEntity(
@@ -114,19 +100,4 @@ data class TagEntity(
 data class TicketPriceEntity(
     val price: Int,
     val type: String
-)
-
-data class TranslatedOpeningHoursEntity(
-    @Embedded(prefix = "friday_") val friday: DayTimeEntity,
-    @Embedded(prefix = "monday_") val monday: DayTimeEntity,
-    @Embedded(prefix = "saturday_") val saturday: DayTimeEntity,
-    @Embedded(prefix = "sunday_") val sunday: DayTimeEntity,
-    @Embedded(prefix = "thursday_") val thursday: DayTimeEntity,
-    @Embedded(prefix = "tuesday_") val tuesday: DayTimeEntity,
-    @Embedded(prefix = "wednesday_") val wednesday: DayTimeEntity
-)
-
-data class DayTimeEntity(
-    val day: String,
-    val time: String
 )

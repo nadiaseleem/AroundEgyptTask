@@ -24,5 +24,9 @@
     <string name="most_recent">Most Recent</string>
     <string name="not_found">No results found</string>
     <string name="not_found_message">Adjust filters to get better results</string>
+    <string name="explore_now">EXPLORE NOW</string>
+    <string name="share">share</string>
+    <string name="egypt">%1$s,Egypt.</string>
+    <string name="description">Description</string>
 
 </resources>

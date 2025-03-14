@@ -9,15 +9,16 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.example.aroundegypt.features.home.domain.models.ExperiencesResponse
+import com.example.aroundegypt.features.home.domain.models.Experience
 
 @Composable
 fun ExperienceList(
-    experiences: List<ExperiencesResponse.Experience>,
+    experiences: List<Experience>,
     isHorizontal: Boolean = false,
     isRecommended: Boolean = false,
-    onLikeClick: (ExperiencesResponse.Experience) -> Unit,
-    modifier: Modifier = Modifier
+    onLikeClick: (Experience) -> Unit,
+    modifier: Modifier = Modifier,
+    onExperienceClick: (String) -> Unit
 ) {
     if (isHorizontal) {
         LazyRow(
@@ -29,7 +30,8 @@ fun ExperienceList(
                     modifier = Modifier.width(320.dp),
                     experience = experience,
                     isRecommended = isRecommended,
-                    onLikeClick = { onLikeClick(it) }
+                    onLikeClick = { onLikeClick(it) },
+                    onExperienceClick = { onExperienceClick(it) }
                 )
             }
         }
@@ -41,8 +43,10 @@ fun ExperienceList(
             items(experiences) { experience ->
                 ExperienceCard(
                     experience = experience,
-                    modifier = Modifier.padding(end = 18.dp)
-                ) { onLikeClick(it) }
+                    modifier = Modifier.padding(end = 18.dp),
+                    onLikeClick = { onLikeClick(it) },
+                    onExperienceClick = { onExperienceClick(it) }
+                )
             }
         }
     }
