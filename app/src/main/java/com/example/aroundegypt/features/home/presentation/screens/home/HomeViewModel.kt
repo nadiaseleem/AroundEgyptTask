@@ -50,8 +50,11 @@ class HomeViewModel @Inject constructor(
 
     private fun loadLikedExperiences() {
         viewModelScope.launch {
-            val savedLikedExperiences = getLikedExperiencesUC.invoke()
-            _state.update { it.copy(likedExperiences = savedLikedExperiences) }
+            when (val savedLikedExperiences = getLikedExperiencesUC.invoke()) {
+                is Resource.Failure -> handleError(savedLikedExperiences)
+                is Resource.Loading -> {}
+                is Resource.Success -> _state.update { it.copy(likedExperiences = savedLikedExperiences.data) }
+            }
         }
     }
 
@@ -62,24 +65,30 @@ class HomeViewModel @Inject constructor(
 
     fun reloadLikedExperiences() {
         viewModelScope.launch {
-            val savedLikedExperiences = getLikedExperiencesUC.invoke()
-            _state.update { currentState ->
-                currentState.copy(
-                    likedExperiences = savedLikedExperiences,
-                    recommendedExperiences = updateExperiencesWithLikedStatus(
-                        currentState.recommendedExperiences,
-                        savedLikedExperiences
-                    ),
-                    mostRecentExperiences = updateExperiencesWithLikedStatus(
-                        currentState.mostRecentExperiences,
-                        savedLikedExperiences
-                    ),
-                    experiencesSearchResult = updateExperiencesWithLikedStatus(
-                        currentState.experiencesSearchResult,
-                        savedLikedExperiences
-                    )
-                )
+            when (val savedLikedExperiences = getLikedExperiencesUC.invoke()) {
+                is Resource.Failure -> handleError(savedLikedExperiences)
+                is Resource.Loading -> {}
+                is Resource.Success -> {
+                    _state.update { currentState ->
+                        currentState.copy(
+                            likedExperiences = savedLikedExperiences.data,
+                            recommendedExperiences = updateExperiencesWithLikedStatus(
+                                currentState.recommendedExperiences,
+                                savedLikedExperiences.data
+                            ),
+                            mostRecentExperiences = updateExperiencesWithLikedStatus(
+                                currentState.mostRecentExperiences,
+                                savedLikedExperiences.data
+                            ),
+                            experiencesSearchResult = updateExperiencesWithLikedStatus(
+                                currentState.experiencesSearchResult,
+                                savedLikedExperiences.data
+                            )
+                        )
+                    }
+                }
             }
+
         }
     }
 
