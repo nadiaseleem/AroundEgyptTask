@@ -1,4 +1,4 @@
-package com.example.aroundegypt.features.home.presentation
+package com.example.aroundegypt.features.home.presentation.screens.home
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
@@ -47,8 +47,8 @@ internal fun HomeScreen(
     val state by viewModel.state.collectAsState()
     val snackbarHostState = viewModel.snackbarHostState
 
-    // Observe events
     LaunchedEffect(Unit) {
+        viewModel.reloadLikedExperiences()
         EventBus.events.collect { event ->
             when (event) {
                 is HomeEvent.ShowError -> {
