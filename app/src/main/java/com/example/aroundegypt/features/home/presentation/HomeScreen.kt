@@ -13,33 +13,26 @@ import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.BaselineShift
-import androidx.compose.ui.text.style.LineHeightStyle
-import androidx.compose.ui.text.style.LineHeightStyle.Trim
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.aroundegypt.R
 import com.example.aroundegypt.common.presentation.events.EventBus
-import com.example.aroundegypt.common.presentation.ui.theme.Gotham
-import com.example.aroundegypt.common.presentation.ui.theme.GothamRounded
 import com.example.aroundegypt.common.presentation.ui_components.HomeTopAppBar
-import com.example.aroundegypt.features.home.domain.models.ExperiencesResponse
+import com.example.aroundegypt.features.home.domain.models.Experience
+import com.example.aroundegypt.features.home.presentation.ui_components.ContentText
 import com.example.aroundegypt.features.home.presentation.ui_components.EmptyState
 import com.example.aroundegypt.features.home.presentation.ui_components.ExperienceCard
 import com.example.aroundegypt.features.home.presentation.ui_components.ExperienceList
 import com.example.aroundegypt.features.home.presentation.ui_components.ShimmerCard
 import com.example.aroundegypt.features.home.presentation.ui_components.ShimmerList
+import com.example.aroundegypt.features.home.presentation.ui_components.TitleText
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -48,7 +41,8 @@ data object HomeRoute
 @Composable
 internal fun HomeScreen(
     viewModel: HomeViewModel = hiltViewModel(),
-    drawerState: DrawerState
+    drawerState: DrawerState,
+    onExperienceClick: (String) -> Unit
 ) {
     val state by viewModel.state.collectAsState()
     val snackbarHostState = viewModel.snackbarHostState
@@ -63,12 +57,15 @@ internal fun HomeScreen(
             }
         }
     }
-    HomeScreenContent(state = state,
+    HomeScreenContent(
+        state = state,
         drawerState = drawerState,
         snackbarHostState = snackbarHostState,
         onLikeClick = { viewModel.likeExperience(it) },
         onSearchQueryChange = { viewModel.setSearchQuery(it) },
-        onSearchClick = { viewModel.searchExperiences() })
+        onSearchClick = { viewModel.searchExperiences() },
+        onExperienceClick = { onExperienceClick(it) },
+    )
 }
 
 @Composable
@@ -76,9 +73,10 @@ fun HomeScreenContent(
     state: HomeViewStates,
     drawerState: DrawerState,
     snackbarHostState: SnackbarHostState,
-    onLikeClick: (ExperiencesResponse.Experience) -> Unit,
+    onLikeClick: (Experience) -> Unit,
     onSearchQueryChange: (String) -> Unit,
     onSearchClick: () -> Unit,
+    onExperienceClick: (String) -> Unit
 ) {
     Scaffold(
         contentWindowInsets = WindowInsets.safeDrawing,
@@ -99,22 +97,25 @@ fun HomeScreenContent(
             DefaultHomeState(
                 state = state,
                 contentPadding = contentPadding,
-            ) {
-                onLikeClick(it)
-            }
+                onExperienceClick = { onExperienceClick(it) },
+                onLikeClick = { onLikeClick(it) }
+            )
         } else {
-            SearchState(contentPadding, state) {
-                onLikeClick(it)
-            }
+            SearchState(contentPadding, state,
+                onLikeClick = { onLikeClick(it) },
+                onExperienceClick = { onExperienceClick(it) }
+            )
         }
     }
 }
+
 
 @Composable
 private fun DefaultHomeState(
     contentPadding: PaddingValues,
     state: HomeViewStates,
-    onLikeClick: (ExperiencesResponse.Experience) -> Unit,
+    onLikeClick: (Experience) -> Unit,
+    onExperienceClick: (String) -> Unit
 ) {
     LazyColumn(
         modifier = Modifier
@@ -125,41 +126,19 @@ private fun DefaultHomeState(
     ) {
         // Welcome Text
         item {
-            Text(
-                text = stringResource(R.string.welcome),
-                fontFamily = GothamRounded,
-                fontWeight = FontWeight.Bold,
-                fontSize = 22.sp
-            )
+            TitleText(title = stringResource(R.string.welcome))
         }
 
         // Welcome Message Text
         item {
-            Text(
-                text = stringResource(R.string.welcome_message),
-                fontFamily = Gotham,
-                fontWeight = FontWeight.Medium,
-                fontSize = 14.sp,
-                style = TextStyle(
-                    lineHeight = 16.sp,
-                    baselineShift = BaselineShift(1F),
-                    lineHeightStyle = LineHeightStyle(
-                        alignment = LineHeightStyle.Alignment.Proportional,
-                        trim = Trim.Both
-                    )
-                )
-            )
+            ContentText(content = stringResource(R.string.welcome_message))
         }
 
         // Recommended Experiences Text
         item {
-            Text(
-                text = stringResource(R.string.recommended_experiences),
-                fontFamily = Gotham,
-                fontWeight = FontWeight.Bold,
-                fontSize = 22.sp
-            )
+            TitleText(title = stringResource(R.string.recommended_experiences))
         }
+
 
         // Recommended Experiences List
         item {
@@ -169,7 +148,8 @@ private fun DefaultHomeState(
                     experiences = state.recommendedExperiences,
                     isHorizontal = true,
                     isRecommended = true,
-                    onLikeClick = onLikeClick
+                    onLikeClick = onLikeClick,
+                    onExperienceClick = { onExperienceClick(it) }
                 )
             }
         }
@@ -177,12 +157,7 @@ private fun DefaultHomeState(
 
         // Most Recent Text
         item {
-            Text(
-                text = stringResource(R.string.most_recent),
-                fontFamily = Gotham,
-                fontWeight = FontWeight.Bold,
-                fontSize = 22.sp
-            )
+            TitleText(title = stringResource(R.string.most_recent))
         }
 
         // Most Recent Experiences List
@@ -194,8 +169,10 @@ private fun DefaultHomeState(
             items(state.mostRecentExperiences) { experience ->
                 ExperienceCard(
                     experience = experience,
-                    modifier = Modifier.padding(end = 18.dp)
-                ) { onLikeClick(it) }
+                    modifier = Modifier.padding(end = 18.dp),
+                    onExperienceClick = { onExperienceClick(it) },
+                    onLikeClick = { onLikeClick(it) }
+                )
             }
         }
     }
@@ -206,7 +183,8 @@ private fun DefaultHomeState(
 private fun SearchState(
     contentPadding: PaddingValues,
     state: HomeViewStates,
-    onLikeClick: (ExperiencesResponse.Experience) -> Unit
+    onLikeClick: (Experience) -> Unit,
+    onExperienceClick: (String) -> Unit
 ) {
     LazyColumn(
         modifier = Modifier
@@ -227,7 +205,8 @@ private fun SearchState(
             items(state.experiencesSearchResult) { experience ->
                 ExperienceCard(
                     experience = experience,
-                ) { onLikeClick(it) }
+                    onExperienceClick = { onExperienceClick(it) },
+                    onLikeClick = { onLikeClick(it) })
             }
         }
 
@@ -255,6 +234,7 @@ private fun HomeScreenPreview() {
         snackbarHostState = SnackbarHostState(),
         onLikeClick = {},
         onSearchQueryChange = {},
-        onSearchClick = {}
+        onSearchClick = {},
+        onExperienceClick = {}
     )
 }
